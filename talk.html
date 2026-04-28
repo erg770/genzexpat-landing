@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to Esteban | GenZ Expat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0E0E0E;
+            --bg-raised: #161616;
+            --bg-elevated: #1C1C1C;
+            --text: #E8E4DF;
+            --text-mid: #9B9590;
+            --text-dim: #5C5752;
+            --accent: #D4805A;
+            --accent-dim: rgba(212, 128, 90, 0.12);
+            --rule: #2A2725;
+            --font: 'Inter', system-ui, sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.6rem 3rem;
+            background: rgba(14, 14, 14, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--rule);
+        }
+        .topbar-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .topbar-links { display: flex; gap: 2.5rem; align-items: center; }
+        .topbar-links a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .topbar-links a:hover { opacity: 0.75; }
+        .topbar-links a svg {
+            width: 36px; height: 36px;
+        }
+        .topbar-links a.yt-link svg { fill: #FF0000; }
+        .topbar-links a.ig-link svg { fill: url(#ig-gradient); }
+
+        /* ── VSL SECTION ── */
+        .vsl-section {
+            padding: 8rem 3rem 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .vsl-title {
+            text-align: center;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            margin-bottom: 2rem;
+        }
+        .vsl-video {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            box-shadow:
+                0 30px 50px -15px rgba(0, 0, 0, 0.75),
+                0 12px 24px -8px rgba(0, 0, 0, 0.5);
+        }
+        .vsl-video iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .vsl-cta {
+            text-align: center;
+        }
+        .vsl-cta a {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--text);
+            color: var(--bg);
+            font-family: var(--font);
+            font-size: 0.9rem; font-weight: 600;
+            letter-spacing: 0.03em;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        .vsl-cta a:hover { background: var(--accent); }
+
+        /* ── ACCORDION SECTION ── */
+        .accordion-section {
+            padding: 4rem 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            border-top: 1px solid var(--rule);
+        }
+        .accordion-section h2 {
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .accordion-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .acc-item {
+            border-top: 1px solid var(--rule);
+        }
+        .acc-item:last-child {
+            border-bottom: 1px solid var(--rule);
+        }
+        .acc-bar {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 0.5rem;
+            cursor: pointer;
+            transition: background 0.15s;
+            border-radius: 2px;
+            user-select: none;
+        }
+        .acc-bar:hover {
+            background: var(--bg-raised);
+        }
+        .acc-icon {
+            flex-shrink: 0;
+            width: 36px; height: 36px;
+            background: var(--accent-dim);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        .acc-title {
+            flex: 1;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+        .acc-arrow {
+            flex-shrink: 0;
+            width: 20px; height: 20px;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        .acc-arrow svg {
+            width: 14px; height: 14px;
+            stroke: var(--text-dim);
+            stroke-width: 2;
+            fill: none;
+        }
+        .acc-item.open .acc-arrow {
+            transform: rotate(180deg);
+        }
+        .acc-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+        }
+        .acc-item.open .acc-body {
+            max-height: 1400px;
+            padding-bottom: 1.75rem;
+        }
+        .acc-body-inner {
+            padding: 0.25rem 0.5rem 0 calc(36px + 1rem + 0.5rem);
+            font-size: 1.1rem;
+            color: #FFFFFF;
+            line-height: 1.75;
+        }
+        .acc-image {
+            display: block;
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow:
+                0 30px 50px -15px rgba(0, 0, 0, 0.75),
+                0 12px 24px -8px rgba(0, 0, 0, 0.5);
+        }
+        .acc-image--square {
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            height: auto;
+        }
+
+        /* ── DESKTOP: 3x3 GRID OF FLOATING CARDS ── */
+        @media (min-width: 769px) {
+            .accordion-section {
+                max-width: 1200px;
+            }
+            .accordion-list {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.75rem;
+            }
+            .acc-item {
+                border: 1px solid var(--rule);
+                border-radius: 16px;
+                background: var(--bg-raised);
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                box-shadow:
+                    0 25px 45px -12px rgba(0, 0, 0, 0.65),
+                    0 10px 20px -6px rgba(0, 0, 0, 0.4);
+                transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            }
+            .acc-item:last-child {
+                border: 1px solid var(--rule);
+            }
+            .acc-item:hover {
+                transform: translateY(-4px);
+                border-color: rgba(212, 128, 90, 0.4);
+                box-shadow:
+                    0 35px 60px -10px rgba(0, 0, 0, 0.8),
+                    0 15px 28px -6px rgba(0, 0, 0, 0.5);
+            }
+            .acc-bar {
+                padding: 0 0 1.1rem 0;
+                cursor: default;
+                background: transparent !important;
+                border-radius: 0;
+            }
+            .acc-bar:hover {
+                background: transparent;
+            }
+            .acc-arrow {
+                display: none;
+            }
+            .acc-title {
+                font-size: 1.05rem;
+            }
+            .acc-body {
+                max-height: none !important;
+                overflow: visible;
+                padding-bottom: 0 !important;
+            }
+            .acc-body-inner {
+                padding: 0;
+            }
+            .acc-image {
+                max-width: 100%;
+                margin-bottom: 1.1rem;
+                border-radius: 10px;
+                box-shadow:
+                    0 18px 32px -10px rgba(0, 0, 0, 0.6),
+                    0 8px 14px -4px rgba(0, 0, 0, 0.4);
+            }
+        }
+
+        /* ── WHO AM I ── */
+        .who-section {
+            padding: 4rem 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+            border-top: 1px solid var(--rule);
+        }
+        .who-section h2 {
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .who-section .who-body {
+            font-size: 1.05rem;
+            color: var(--text-mid);
+            line-height: 1.8;
+            max-width: 700px;
+        }
+
+        /* ── PRICING ── */
+        .pricing {
+            padding: 4rem 3rem;
+            border-top: 1px solid var(--rule);
+            background: var(--bg-raised);
+        }
+        .pricing-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .pricing h2 {
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+        .pricing-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            max-width: 680px;
+        }
+        .price-card {
+            background: var(--bg);
+            border: 1px solid var(--rule);
+            padding: 2.5rem 2rem;
+            position: relative;
+        }
+        .price-card.recommended {
+            border-color: var(--accent);
+        }
+        .price-card.recommended::after {
+            content: 'Recommended';
+            position: absolute;
+            top: 1.2rem; right: 1.2rem;
+            font-size: 0.68rem; font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+        }
+        .price-duration {
+            font-size: 0.78rem; font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 0.75rem;
+        }
+        .price-amount {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 1rem;
+            color: var(--text);
+            letter-spacing: -0.03em;
+        }
+        .price-desc {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            line-height: 1.65;
+            margin-bottom: 1.75rem;
+        }
+        .price-book {
+            display: block;
+            width: 100%;
+            padding: 0.9rem;
+            text-align: center;
+            font-family: var(--font);
+            font-size: 0.85rem; font-weight: 600;
+            letter-spacing: 0.03em;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: all 0.2s;
+            cursor: pointer; border: none;
+        }
+        .price-card:not(.recommended) .price-book {
+            background: transparent;
+            border: 1.5px solid var(--text-dim);
+            color: var(--text);
+        }
+        .price-card:not(.recommended) .price-book:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+        .price-card.recommended .price-book {
+            background: var(--accent);
+            color: var(--bg);
+        }
+        .price-card.recommended .price-book:hover {
+            background: #b86940;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--rule);
+            padding: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        footer p {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--accent); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .topbar { padding: 1rem 1.5rem; }
+            .vsl-section { padding: 7rem 1.5rem 2.5rem; }
+            .accordion-section { padding: 3rem 1.5rem; }
+            .who-section { padding: 3rem 1.5rem; }
+            .pricing { padding: 3rem 1.5rem; }
+            .pricing-options { grid-template-columns: 1fr; }
+            footer {
+                flex-direction: column; gap: 1rem;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <div class="topbar-name">GenZ Expat</div>
+    <div class="topbar-links">
+        <svg width="0" height="0" style="position:absolute">
+            <defs>
+                <linearGradient id="ig-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#F58529"/>
+                    <stop offset="30%" style="stop-color:#DD2A7B"/>
+                    <stop offset="65%" style="stop-color:#8134AF"/>
+                    <stop offset="100%" style="stop-color:#515BD4"/>
+                </linearGradient>
+            </defs>
+        </svg>
+        <a href="https://www.youtube.com/@genzexpat" target="_blank" aria-label="YouTube" class="yt-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/estebanexpat" target="_blank" aria-label="Instagram" class="ig-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </a>
+    </div>
+</div>
+
+<!-- VSL -->
+<section class="vsl-section">
+    <h1 class="vsl-title">Paraguay Consultation with Esteban</h1>
+    <div class="vsl-video">
+        <iframe
+            src="https://www.youtube.com/embed/nn7QGxL7pm0"
+            title="Talk to Esteban — GenZ Expat"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
+    </div>
+    <div class="vsl-cta">
+        <a href="#pricing">Book Your Call &rarr;</a>
+    </div>
+</section>
+
+<!-- WHAT I CAN HELP WITH -->
+<section class="accordion-section">
+    <h2>What I can help with</h2>
+    <div class="accordion-list">
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#127758;</div>
+                <div class="acc-title">Understanding Paraguay</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/understanding.jpg" alt="Understanding Paraguay" class="acc-image acc-image--square">
+                <p>What is life here like? Is Paraguay even a good fit for you? This is step 1. If you're still at this step, let's find out together.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#129309;</div>
+                <div class="acc-title">Social Life & Getting Connected</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/social-life.jpg" alt="Social Life & Getting Connected" class="acc-image acc-image--square">
+                <p>I have a very large network here. I'm happy to plug you in with cool people and guide you on how to make amazing friends. I regularly host and help promote parties, networking events, asados, etc. This is my strongest value proposition, and in my opinion the most important. Connections are everything down here.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#128196;</div>
+                <div class="acc-title">Residency & Fiscal Setup</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/residency.jpg" alt="Residency & Fiscal Setup" class="acc-image">
+                <p>I went through the residency process myself. I'm familiar with how it all works and have met many people working in government as well as agencies. I can help you do it yourself, get connected to someone who can help you out, and give some tips along the way.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#127968;</div>
+                <div class="acc-title">Real Estate & Investment</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/real-estate.jpg" alt="Real Estate & Investment" class="acc-image">
+                <p>I'm the head of Sales for the Asunción Times Homes & Property Division where we connect buyers with vetted properties and provide honest advisory. I've also met and interviewed some of the top players in the space: developers, consultants, investors, lawyers, etc.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#128205;</div>
+                <div class="acc-title">Housing & Location</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/housing.jpg" alt="Housing & Location" class="acc-image acc-image--square">
+                <p>I've been all around Asunción. I've helped many people pick the right neighborhood to stay in based on what they actually value. I can also help you get connected to the right rental options and recommend specific buildings.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#128149;</div>
+                <div class="acc-title">Dating</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/dating.jpg" alt="Dating" class="acc-image">
+                <p>I've dated incredible women here, and I have a beautiful Paraguayan girlfriend. I've gotten a real understanding of how to meet them and what they are looking for. I can help you position yourself to find an amazing girl and get the full dating experience that most expats never accomplish.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#127928;</div>
+                <div class="acc-title">Cultural Immersion</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/culture.jpg" alt="Cultural Immersion" class="acc-image">
+                <p>I know Paraguayan culture at a level way deeper than most expats. I go out of my way to learn it and appreciate it. As a native Spanish speaker with many local friends, I've been able to learn how Paraguayan culture actually works on an interpersonal level.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#128170;</div>
+                <div class="acc-title">Health & Fitness</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/fitness.jpg" alt="Health & Fitness" class="acc-image">
+                <p>I can connect you with the best gyms, running clubs, padel groups, fighting gyms, etc., as well as supplements, spas, nutritious food, and more. This is a great place to optimize your health if you know what to look for.</p>
+            </div></div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-bar">
+                <div class="acc-icon">&#128161;</div>
+                <div class="acc-title">Other Advice & Connections</div>
+                <div class="acc-arrow"><svg viewBox="0 0 14 14"><polyline points="2,5 7,10 12,5"/></svg></div>
+            </div>
+            <div class="acc-body"><div class="acc-body-inner">
+                <img src="images/other.jpg" alt="Other Advice & Connections" class="acc-image">
+                <p>Whatever else you may need, there's a good chance I can help. If not, I can connect you to someone who can.</p>
+            </div></div>
+        </div>
+
+    </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+    <div class="pricing-inner">
+        <h2>Pick your session.</h2>
+        <div class="pricing-options">
+            <div class="price-card">
+                <div class="price-duration">30 Minutes</div>
+                <div class="price-amount">$60</div>
+                <p class="price-desc">Focused session. Come with specific questions and leave with specific answers.</p>
+                <a href="https://cal.com/esteban-gonzalez/30min-consult-call" target="_blank" class="price-book">Book 30 min</a>
+            </div>
+            <div class="price-card recommended">
+                <div class="price-duration">60 Minutes</div>
+                <div class="price-amount">$100</div>
+                <p class="price-desc">The full conversation. Enough time to dig into your situation and map out a real plan.</p>
+                <a href="https://cal.com/esteban-gonzalez/60min-consult-call" target="_blank" class="price-book">Book 60 min</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>&copy; 2026 GenZ Expat</p>
+    <div class="footer-links">
+        <a href="https://www.youtube.com/@genzexpat" target="_blank">YouTube</a>
+        <a href="https://www.instagram.com/estebanexpat" target="_blank">Instagram</a>
+    </div>
+</footer>
+
+<script>
+    document.querySelectorAll('.acc-item').forEach(item => {
+        item.querySelector('.acc-bar').addEventListener('click', () => {
+            item.classList.toggle('open');
+        });
+    });
+</script>
+
+</body>
+</html>
